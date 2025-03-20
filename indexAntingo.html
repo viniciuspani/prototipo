@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórum de Perguntas e Respostas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background-color: #24a1f4;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            margin-right: 20px;
+        }
+        
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .question-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .question-container {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .question-title {
+            font-size: 20px;
+            color: #0077cc;
+            margin-bottom: 10px;
+        }
+        
+        .question-meta {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .question-body {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .response-container {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .response-meta {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .response-body {
+            line-height: 1.6;
+        }
+        
+        .vote-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .vote-button {
+            background-color: #eee;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .vote-button:hover {
+            background-color: #ddd;
+        }
+        
+        .vote-button.liked {
+            background-color: #d1f5d3;
+            color: #2e7d32;
+        }
+        
+        .vote-button.disliked {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .answer-form {
+            margin-top: 30px;
+        }
+        
+        .answer-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .submit-button {
+            background-color: #0095ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .submit-button:hover {
+            background-color: #0077cc;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="img/unnamed.png" alt="Logo" alt="">
+               <h3>Poca Forum</h3> 
+            </div>
+            <div>
+                <input type="text" placeholder="Buscar..." style="padding: 8px; border-radius: 3px; border: none;">
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Perguntas em aberto</h3>
+                <select id="pending-questions" class="question-select">
+                    <option value="">-- Perguntas em aberto --</option>
+                </select>
+                
+                <h3>Respondidas</h3>
+                <select id="answered-questions" class="question-select">
+                    <option value="">-- Perguntas respondidas --</option>
+                </select>
+            </div>
+            
+            <div class="content">
+                <div id="question-display" class="hidden">
+                    <div class="question-container">
+                        <div class="question-header">
+                            <h2 id="display-title" class="question-title"></h2>
+                            <span id="question-status" class="question-meta"></span>
+                        </div>
+                        <div class="question-meta">
+                            Perguntado por <span id="display-author"></span> em <span id="display-date"></span>
+                        </div>
+                        <div id="display-body" class="question-body"></div>
+                        
+                        <div id="response-section" class="hidden">
+                            <div class="response-container">
+                                <div class="response-header">
+                                    <strong>Resposta</strong>
+                                    <span class="response-meta">Respondido por <span id="response-author"></span></span>
+                                </div>
+                                <div id="response-body" class="response-body"></div>
+                                
+                                <div class="vote-buttons">
+                                    <button id="like-button" class="vote-button">
+                                        <span>👍</span> Like <span id="like-count">0</span>
+                                    </button>
+                                    <button id="dislike-button" class="vote-button">
+                                        <span>👎</span> Dislike <span id="dislike-count">0</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="answer-form-container" class="answer-form hidden">
+                            <h3>Sua Resposta</h3>
+                            <textarea id="answer-textarea" class="answer-textarea" placeholder="Escreva sua resposta aqui..."></textarea>
+                            <button id="submit-answer" class="submit-button">Enviar Resposta</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="welcome-message">
+                    <h2>Bem-vindo ao Fórum de Perguntas e Respostas!</h2>
+                    <p>Selecione uma pergunta para responder ou visualizar no menu lateral.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulação de dados da API
+        const questions = [
+            {
+                id: 1,
+                title: "Abertura de Conta?",
+                author: "Vinicius",
+                date: "2025-03-15",
+                body: "Quais documentos são necessários para abrir uma conta corrente no Banestes?",
+                answered: false,
+                response: null,
+                likes: 0,
+                dislikes: 0
+            },
+            {
+                id: 2,
+                title: "Abertura de Conta?",
+                author: "Luciano",
+                date: "2025-03-16",
+                body: "Como transformar uma conta salário em conta corrente?",
+                answered: false,
+                response: null,
+                likes: 0,
+                dislikes: 0
+            },
+            {
+                id: 3,
+                title: "Cartões e Benefícios",
+                author: "Raiane",
+                date: "2025-03-10",
+                body: "Como desbloquear um cartão Banescard?",
+                answered: true,
+                response: {
+                    author: "Jadson",
+                    body: "O desbloqueio pode ser feito pelos seguintes meios:\n\n1.Aplicativo Banestes: Acesse Cartões - Desbloqueio e siga as instruções.\n\n2. Autoatendimento: Utilize o terminal para realizar o desbloqueio digitando a senha.\n\n3. Agência: Solicite ao gerente que faça o desbloqueio pelo sistema GCE03.\n\n4. Considere o particionamento de tabelas muito grandes."
+                },
+                likes: 12,
+                dislikes: 2
+            },
+            {
+                id: 4,
+                title: "Atendimento ao Cliente",
+                author: "Daniele",
+                date: "2025-03-12",
+                body: "Como proceder quando um cliente esquece a senha de quatro dígitos do cartão?",
+                answered: false,
+                response: null,
+                likes: 0,
+                dislikes: 0
+            },
+            {
+                id: 5,
+                title: "Sistemas e Operações Bancárias",
+                author: "Jose",
+                date: "2025-03-12",
+                body: "Como habilitar um dispositivo para acessar o aplicativo Banestes?",
+                answered: true,
+                response: {
+                    author: "Raimundo Donato",
+                    body: "O dispositivo pode ser habilitado das seguintes formas:\n\n1.Via agência: O funcionário fornece um código de habilitação.\n\n1.1 Acessar a Intranet.\n\n" +
+                    "1.2 Acessar o Portal de Sistemas.\n\n1.3. GCD - Gerenciador e cadastro de dispositivos - Código de Habilitação - criar código de habilitação - Entrar com número da conta. Pegar o código e entregar ao cliente." +
+                    "Via internet banking: Acesse Gerenciador de Dispositivos e habilite o aparelho Via autoatendimento: outros serviços -  dispositivos - habilitar app - banestes app - contrassenha - selecionar dispositivos que serão habilitados - confirma." +
+                    "Via aplicativo: No menu Segurança, gerencie os dispositivos cadastrados."
+                },
+                likes: 0,
+                dislikes: 0
+            }
+        ];
+        
+        // Elementos DOM
+        const pendingQuestionsSelect = document.getElementById('pending-questions');
+        const answeredQuestionsSelect = document.getElementById('answered-questions');
+        const questionDisplay = document.getElementById('question-display');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const displayTitle = document.getElementById('display-title');
+        const displayAuthor = document.getElementById('display-author');
+        const displayDate = document.getElementById('display-date');
+        const displayBody = document.getElementById('display-body');
+        const questionStatus = document.getElementById('question-status');
+        const responseSection = document.getElementById('response-section');
+        const responseAuthor = document.getElementById('response-author');
+        const responseBody = document.getElementById('response-body');
+        const likeButton = document.getElementById('like-button');
+        const dislikeButton = document.getElementById('dislike-button');
+        const likeCount = document.getElementById('like-count');
+        const dislikeCount = document.getElementById('dislike-count');
+        const answerFormContainer = document.getElementById('answer-form-container');
+        const answerTextarea = document.getElementById('answer-textarea');
+        const submitAnswer = document.getElementById('submit-answer');
+        
+        // Carrega as perguntas nos selects
+        function loadQuestions() {
+            // Limpa os selects
+            pendingQuestionsSelect.innerHTML = '<option value="">-- Perguntas a responder --</option>';
+            answeredQuestionsSelect.innerHTML = '<option value="">-- Perguntas respondidas --</option>';
+            
+            // Carrega as perguntas nos selects apropriados
+            questions.forEach(question => {
+                const option = document.createElement('option');
+                option.value = question.id;
+                option.textContent = question.title;
+                
+                if (question.answered) {
+                    answeredQuestionsSelect.appendChild(option);
+                } else {
+                    pendingQuestionsSelect.appendChild(option);
+                }
+            });
+        }
+        
+        // Exibe uma pergunta selecionada
+        function displayQuestion(questionId) {
+            const question = questions.find(q => q.id == questionId);
+            
+            if (!question) return;
+            
+            // Atualiza os elementos com os dados da pergunta
+            displayTitle.textContent = question.title;
+            displayAuthor.textContent = question.author;
+            displayDate.textContent = question.date;
+            displayBody.textContent = question.body;
+            questionStatus.textContent = question.answered ? "Respondida" : "Aguardando resposta";
+            
+            // Mostra a seção de resposta se a pergunta foi respondida
+            if (question.answered && question.response) {
+                responseSection.classList.remove('hidden');
+                answerFormContainer.classList.add('hidden');
+                
+                responseAuthor.textContent = question.response.author;
+                responseBody.textContent = question.response.body;
+                
+                likeCount.textContent = question.likes;
+                dislikeCount.textContent = question.dislikes;
+            } else {
+                responseSection.classList.add('hidden');
+                answerFormContainer.classList.remove('hidden');
+            }
+            
+            // Mostra a pergunta e esconde a mensagem de boas-vindas
+            questionDisplay.classList.remove('hidden');
+            welcomeMessage.classList.add('hidden');
+        }
+        
+        // Manipulador para responder uma pergunta
+        function submitAnswerHandler() {
+            const selectedId = pendingQuestionsSelect.value;
+            if (!selectedId) return;
+            
+            const answerText = answerTextarea.value.trim();
+            if (!answerText) {
+                alert("Por favor, escreva uma resposta antes de enviar.");
+                return;
+            }
+            
+            // Encontra a pergunta e adiciona a resposta
+            const questionIndex = questions.findIndex(q => q.id == selectedId);
+            if (questionIndex >= 0) {
+                questions[questionIndex].answered = true;
+                questions[questionIndex].response = {
+                    author: "você",
+                    body: answerText
+                };
+                
+                // Recarrega os selects e exibe a pergunta atualizada
+                loadQuestions();
+                answeredQuestionsSelect.value = selectedId;
+                displayQuestion(selectedId);
+                
+                // Limpa o textarea
+                answerTextarea.value = "";
+            }
+        }
+        
+        // Manipuladores para like/dislike
+        function likeHandler() {
+            const selectedId = answeredQuestionsSelect.value;
+            if (!selectedId) return;
+            
+            const questionIndex = questions.findIndex(q => q.id == selectedId);
+            if (questionIndex >= 0) {
+                questions[questionIndex].likes++;
+                likeCount.textContent = questions[questionIndex].likes;
+                
+                // Marca o botão como ativo
+                likeButton.classList.add('liked');
+                dislikeButton.classList.remove('disliked');
+            }
+        }
+        
+        function dislikeHandler() {
+            const selectedId = answeredQuestionsSelect.value;
+            if (!selectedId) return;
+            
+            const questionIndex = questions.findIndex(q => q.id == selectedId);
+            if (questionIndex >= 0) {
+                questions[questionIndex].dislikes++;
+                dislikeCount.textContent = questions[questionIndex].dislikes;
+                
+                // Marca o botão como ativo
+                dislikeButton.classList.add('disliked');
+                likeButton.classList.remove('liked');
+            }
+        }
+        
+        // Adiciona event listeners
+        pendingQuestionsSelect.addEventListener('change', function() {
+            if (this.value) {
+                displayQuestion(this.value);
+                answeredQuestionsSelect.value = "";
+            }
+        });
+        
+        answeredQuestionsSelect.addEventListener('change', function() {
+            if (this.value) {
+                displayQuestion(this.value);
+                pendingQuestionsSelect.value = "";
+            }
+        });
+        
+        submitAnswer.addEventListener('click', submitAnswerHandler);
+        likeButton.addEventListener('click', likeHandler);
+        dislikeButton.addEventListener('click', dislikeHandler);
+        
+        // Inicializa a página
+        loadQuestions();
+    </script>
+</body>
+</html>
