@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fórum de Perguntas e Respostas</title>
     <style>
+        /* Estilos existentes... */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -62,6 +63,30 @@
             margin-bottom: 15px;
             border-radius: 5px;
             border: 1px solid #ddd;
+        }
+        
+        .questions-container {
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .questions-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .question-item {
+            padding: 8px 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .question-item:hover {
+            background-color: #f0f0f0;
         }
         
         .question-container {
@@ -242,6 +267,17 @@
         .notification.show {
             opacity: 1;
         }
+        
+        /* Estilo para categorias */
+        .category-section {
+            margin-bottom: 25px;
+        }
+        
+        .category-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #444;
+        }
     </style>
 </head>
 <body>
@@ -251,7 +287,7 @@
                 <img src="img/logo.png" alt="Logo" alt="">                
             </div>
             <div>
-                <input type="text" placeholder="Buscar..." style="padding: 8px; border-radius: 3px; border: none;">
+                <input type="text" id="search-input" placeholder="Buscar Duvida..." style="padding: 8px; border-radius: 3px; border: none;">
             </div>
         </div>
     </header>
@@ -259,15 +295,25 @@
     <div class="container">
         <div class="main-content">
             <div class="sidebar">
-                <h3>Perguntas em aberto</h3>
-                <select id="pending-questions" class="question-select">
-                    <option value="">-- Perguntas a responder --</option>
-                </select>
+                <div class="category-section">
+                    <h3 class="category-title">Perguntas em aberto</h3>
+                    <select id="pending-categories" class="question-select">
+                        <option value="">-- Selecione uma categoria --</option>
+                    </select>
+                    <select id="pending-questions" class="question-select">
+                        <option value="">-- Selecione uma pergunta --</option>
+                    </select>
+                </div>
                 
-                <h3>Respondidas</h3>
-                <select id="answered-questions" class="question-select">
-                    <option value="">-- Perguntas respondidas --</option>
-                </select>
+                <div class="category-section">
+                    <h3 class="category-title">Respondidas</h3>
+                    <select id="answered-categories" class="question-select">
+                        <option value="">-- Selecione uma categoria --</option>
+                    </select>
+                    <select id="answered-questions" class="question-select">
+                        <option value="">-- Selecione uma pergunta --</option>
+                    </select>
+                </div>
             </div>
             
             <div class="content">
@@ -311,7 +357,7 @@
                 
                 <div id="welcome-message">
                     <h2>Bem-vindo ao Fórum de Perguntas e Respostas!</h2>
-                    <p>Selecione uma pergunta para responder ou visualizar no menu lateral.</p>
+                    <p>Selecione uma categoria e depois uma pergunta para responder ou visualizar.</p>
                 </div>
             </div>
         </div>
@@ -323,9 +369,10 @@
     <script>
         // Simulação de dados da API
         const questions = [
-        {
+            {
                 id: 1,
-                title: "Abertura de Conta?",
+                category: "Abertura de Conta",
+                title: "Documentos necessários",
                 author: "Vinicius",
                 date: "2025-03-15",
                 body: "Quais documentos são necessários para abrir uma conta corrente no Banestes?",
@@ -336,7 +383,8 @@
             },
             {
                 id: 2,
-                title: "Abertura de Conta?",
+                category: "Abertura de Conta",
+                title: "Transformação de conta",
                 author: "Luciano",
                 date: "2025-03-16",
                 body: "Como transformar uma conta salário em conta corrente?",
@@ -347,7 +395,8 @@
             },
             {
                 id: 3,
-                title: "Cartões e Benefícios",
+                category: "Cartões e Benefícios",
+                title: "Desbloqueio de cartão",
                 author: "Raiane",
                 date: "2025-03-10",
                 body: "Como desbloquear um cartão Banescard?",
@@ -361,7 +410,8 @@
             },
             {
                 id: 4,
-                title: "Atendimento ao Cliente",
+                category: "Atendimento ao Cliente",
+                title: "Recuperação de senha",
                 author: "Daniele",
                 date: "2025-03-12",
                 body: "Como proceder quando um cliente esquece a senha de quatro dígitos do cartão?",
@@ -372,7 +422,8 @@
             },
             {
                 id: 5,
-                title: "Sistemas e Operações Bancárias",
+                category: "Sistemas e Operações Bancárias",
+                title: "Habilitação de dispositivo",
                 author: "Jose",
                 date: "2025-03-12",
                 body: "Como habilitar um dispositivo para acessar o aplicativo Banestes?",
@@ -390,6 +441,8 @@
         ];
         
         // Elementos DOM
+        const pendingCategoriesSelect = document.getElementById('pending-categories');
+        const answeredCategoriesSelect = document.getElementById('answered-categories');
         const pendingQuestionsSelect = document.getElementById('pending-questions');
         const answeredQuestionsSelect = document.getElementById('answered-questions');
         const questionDisplay = document.getElementById('question-display');
@@ -409,7 +462,7 @@
         const answerFormContainer = document.getElementById('answer-form-container');
         const answerTextarea = document.getElementById('answer-textarea');
         const submitAnswer = document.getElementById('submit-answer');
-        const searchInput = document.querySelector('input[placeholder="Buscar..."]');
+        const searchInput = document.getElementById('search-input');
         const notificationElement = document.getElementById('notification');
         const searchResultsContainer = document.createElement('div');
         
@@ -417,23 +470,61 @@
         searchResultsContainer.classList.add('search-results');
         document.querySelector('.content').appendChild(searchResultsContainer);
         
-        // Carrega as perguntas nos selects
-        function loadQuestions() {
-            // Limpa os selects
-            pendingQuestionsSelect.innerHTML = '<option value="">-- Perguntas a responder --</option>';
-            answeredQuestionsSelect.innerHTML = '<option value="">-- Perguntas respondidas --</option>';
-            
-            // Carrega as perguntas nos selects apropriados
+        // Função para obter categorias únicas
+        function getUniqueCategories() {
+            const categories = new Set();
             questions.forEach(question => {
+                categories.add(question.category);
+            });
+            return Array.from(categories).sort();
+        }
+        
+        // Carrega as categorias nos selects
+        function loadCategories() {
+            // Limpa os selects
+            pendingCategoriesSelect.innerHTML = '<option value="">-- Selecione uma categoria --</option>';
+            answeredCategoriesSelect.innerHTML = '<option value="">-- Selecione uma categoria --</option>';
+            
+            // Obtém as categorias únicas
+            const categories = getUniqueCategories();
+            
+            // Verifica se há perguntas não respondidas por categoria
+            categories.forEach(category => {
+                const pendingInCategory = questions.some(q => q.category === category && !q.answered);
+                if (pendingInCategory) {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    pendingCategoriesSelect.appendChild(option);
+                }
+                
+                const answeredInCategory = questions.some(q => q.category === category && q.answered);
+                if (answeredInCategory) {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    answeredCategoriesSelect.appendChild(option);
+                }
+            });
+        }
+        
+        // Carrega as perguntas para um select específico
+        function loadQuestionsForCategory(category, status) {
+            // Filtra perguntas pela categoria e status (respondidas ou não)
+            const filteredQuestions = questions.filter(q => 
+                q.category === category && q.answered === (status === 'answered')
+            );
+            
+            // Limpa a lista atual
+            const targetSelect = status === 'answered' ? answeredQuestionsSelect : pendingQuestionsSelect;
+            targetSelect.innerHTML = '<option value="">-- Selecione uma pergunta --</option>';
+            
+            // Adiciona as perguntas ao select
+            filteredQuestions.forEach(question => {
                 const option = document.createElement('option');
                 option.value = question.id;
                 option.textContent = question.title;
-                
-                if (question.answered) {
-                    answeredQuestionsSelect.appendChild(option);
-                } else {
-                    pendingQuestionsSelect.appendChild(option);
-                }
+                targetSelect.appendChild(option);
             });
         }
         
@@ -471,15 +562,6 @@
             
             // Esconde os resultados da pesquisa
             searchResultsContainer.classList.add('hidden');
-            
-            // Atualiza o select correspondente
-            if (question.answered) {
-                answeredQuestionsSelect.value = questionId;
-                pendingQuestionsSelect.value = "";
-            } else {
-                pendingQuestionsSelect.value = questionId;
-                answeredQuestionsSelect.value = "";
-            }
         }
         
         // Função para mostrar notificações
@@ -495,9 +577,8 @@
         // Manipulador para responder uma pergunta
         function submitAnswerHandler() {
             const selectedId = pendingQuestionsSelect.value;
-            if (!selectedId) return;
-            
             const answerText = answerTextarea.value.trim();
+            
             if (!answerText) {
                 alert("Por favor, escreva uma resposta antes de enviar.");
                 return;
@@ -513,9 +594,15 @@
                     body: answerText
                 };
                 
-                // Recarrega os selects e exibe a pergunta atualizada
-                loadQuestions();
-                answeredQuestionsSelect.value = selectedId;
+                // Recarrega a interface
+                loadCategories();
+                
+                // Limpa a seleção anterior
+                pendingQuestionsSelect.value = "";
+                answeredQuestionsSelect.value = question.category;
+                loadQuestionsForCategory(question.category, 'answered');
+                
+                // Exibe a pergunta atualizada
                 displayQuestion(selectedId);
                 
                 // Limpa o textarea
@@ -528,10 +615,9 @@
         
         // Manipuladores para like/dislike
         function likeHandler() {
-            const selectedId = answeredQuestionsSelect.value;
-            if (!selectedId) return;
-            
+            const selectedId = pendingQuestionsSelect.value || answeredQuestionsSelect.value;
             const questionIndex = questions.findIndex(q => q.id == selectedId);
+            
             if (questionIndex >= 0) {
                 questions[questionIndex].likes++;
                 likeCount.textContent = questions[questionIndex].likes;
@@ -543,10 +629,9 @@
         }
         
         function dislikeHandler() {
-            const selectedId = answeredQuestionsSelect.value;
-            if (!selectedId) return;
-            
+            const selectedId = pendingQuestionsSelect.value || answeredQuestionsSelect.value;
             const questionIndex = questions.findIndex(q => q.id == selectedId);
+            
             if (questionIndex >= 0) {
                 questions[questionIndex].dislikes++;
                 dislikeCount.textContent = questions[questionIndex].dislikes;
@@ -575,9 +660,10 @@
                 return;
             }
             
-            // Filtra as perguntas que contêm o termo de pesquisa no título ou corpo
+            // Filtra as perguntas que contêm o termo de pesquisa no título, categoria ou corpo
             const results = questions.filter(question => 
                 question.title.toLowerCase().includes(searchTerm) || 
+                question.category.toLowerCase().includes(searchTerm) ||
                 question.body.toLowerCase().includes(searchTerm) ||
                 (question.answered && question.response && 
                  question.response.body.toLowerCase().includes(searchTerm))
@@ -613,7 +699,7 @@
                 
                 const title = document.createElement('div');
                 title.classList.add('search-result-title');
-                title.innerHTML = highlightText(question.title, searchTerm);
+                title.innerHTML = `${highlightText(question.category, searchTerm)} > ${highlightText(question.title, searchTerm)}`;
                 
                 const meta = document.createElement('div');
                 meta.classList.add('search-result-meta');
@@ -659,27 +745,57 @@
             }
         });
         
-        // Adiciona event listeners
+        // Event listeners para os selects de categoria
+        pendingCategoriesSelect.addEventListener('change', function() {
+            const category = this.value;
+            loadQuestionsForCategory(category, 'pending');
+        });
+        
+        answeredCategoriesSelect.addEventListener('change', function() {
+            const category = this.value;
+            loadQuestionsForCategory(category, 'answered');
+        });
+
+        // Event listeners para os selects de perguntas
         pendingQuestionsSelect.addEventListener('change', function() {
-            if (this.value) {
-                displayQuestion(this.value);
-                answeredQuestionsSelect.value = "";
+            const questionId = this.value;
+            if (questionId) {
+                displayQuestion(questionId);
             }
         });
-        
+
         answeredQuestionsSelect.addEventListener('change', function() {
-            if (this.value) {
-                displayQuestion(this.value);
-                pendingQuestionsSelect.value = "";
+            const questionId = this.value;
+            if (questionId) {
+                displayQuestion(questionId);
             }
         });
+
         
+        function setupSearchBlurBehavior() {
+            // Referência ao campo de busca
+            const searchInput = document.querySelector('input[placeholder="Buscar Duvida..."]');
+            
+            // Adiciona evento de blur (quando o campo perde o foco)
+            searchInput.addEventListener('blur', function() {
+                // Salva o termo de busca atual antes de limpar o campo
+                const searchTerm = this.value.trim();
+                
+                // Limpa o campo de busca
+                this.value = '';                
+    });
+    }
+
+        // Event listeners para os botões
         submitAnswer.addEventListener('click', submitAnswerHandler);
         likeButton.addEventListener('click', likeHandler);
         dislikeButton.addEventListener('click', dislikeHandler);
+
+        // Configurar comportamento de limpeza do campo de busca ao perder foco
+        setupSearchBlurBehavior();
         
         // Inicializa a página
-        loadQuestions();
+        loadCategories();
     </script>
 </body>
 </html>
