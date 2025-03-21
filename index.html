@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fórum de Perguntas e Respostas</title>
     <style>
-        /* Estilos base */
+        /* Estilos existentes... */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,42 +13,42 @@
             background-color: #f5f5f5;
             color: #333;
         }
-
+        
         header {
             background-color: #012960;
             color: white;
             padding: 15px 0;
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
-
+        
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
+        
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .logo {
             font-size: 24px;
             font-weight: bold;
         }
-
+        
         .main-content {
             display: flex;
             margin-top: 20px;
         }
-
+        
         .sidebar {
             width: 250px;
             margin-right: 20px;
         }
-
+        
         .content {
             flex: 1;
             background-color: white;
@@ -57,7 +56,7 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
-
+        
         .question-select {
             width: 100%;
             padding: 10px;
@@ -65,18 +64,18 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
-
+        
         .questions-container {
             margin-bottom: 20px;
             display: none;
         }
-
+        
         .questions-list {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
-
+        
         .question-item {
             padding: 8px 10px;
             border: 1px solid #eee;
@@ -85,67 +84,67 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-
+        
         .question-item:hover {
             background-color: #f0f0f0;
         }
-
+        
         .question-container {
             border-bottom: 1px solid #eee;
             padding-bottom: 20px;
             margin-bottom: 20px;
         }
-
+        
         .question-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-
+        
         .question-title {
             font-size: 20px;
             color: #0077cc;
             margin-bottom: 10px;
         }
-
+        
         .question-meta {
             font-size: 14px;
             color: #777;
         }
-
+        
         .question-body {
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
+        
         .response-container {
             background-color: #f9f9f9;
             padding: 15px;
             border-radius: 5px;
             margin-top: 20px;
         }
-
+        
         .response-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-
+        
         .response-meta {
             font-size: 14px;
             color: #777;
         }
-
+        
         .response-body {
             line-height: 1.6;
         }
-
+        
         .vote-buttons {
             display: flex;
             gap: 10px;
             margin-top: 15px;
         }
-
+        
         .vote-button {
             background-color: #eee;
             border: none;
@@ -156,25 +155,25 @@
             align-items: center;
             gap: 5px;
         }
-
+        
         .vote-button:hover {
             background-color: #ddd;
         }
-
+        
         .vote-button.liked {
             background-color: #d1f5d3;
             color: #2e7d32;
         }
-
+        
         .vote-button.disliked {
             background-color: #ffebee;
             color: #c62828;
         }
-
+        
         .answer-form {
             margin-top: 30px;
         }
-
+        
         .answer-textarea {
             width: 100%;
             min-height: 150px;
@@ -184,7 +183,7 @@
             margin-bottom: 15px;
             font-family: Arial, sans-serif;
         }
-
+        
         .submit-button {
             background-color: #0095ff;
             color: white;
@@ -193,20 +192,20 @@
             border-radius: 3px;
             cursor: pointer;
         }
-
+        
         .submit-button:hover {
             background-color: #0077cc;
         }
-
+        
         .hidden {
             display: none;
         }
-
+        
         /* Estilos para busca */
         .search-results {
             margin-top: 15px;
         }
-
+        
         .search-result-item {
             padding: 10px 15px;
             border: 1px solid #eee;
@@ -215,41 +214,41 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-
+        
         .search-result-item:hover {
             background-color: #f5f5f5;
         }
-
+        
         .search-result-title {
             color: #0077cc;
             font-weight: bold;
             margin-bottom: 5px;
         }
-
+        
         .search-result-meta {
             font-size: 12px;
             color: #777;
         }
-
+        
         .search-result-highlight {
             background-color: #fff3cd;
             padding: 0 2px;
             border-radius: 2px;
         }
-
+        
         .search-status {
             margin-bottom: 10px;
             font-size: 14px;
             color: #777;
         }
-
+        
         .no-results {
             padding: 15px;
             text-align: center;
             color: #777;
             font-style: italic;
         }
-
+        
         /* Estilos para notificações */
         .notification {
             position: fixed;
@@ -264,163 +263,59 @@
             transition: opacity 0.3s ease-in-out;
             z-index: 1000;
         }
-
+        
         .notification.show {
             opacity: 1;
         }
-
+        
         /* Estilo para categorias */
         .category-section {
             margin-bottom: 25px;
         }
-
+        
         .category-title {
             font-size: 16px;
             margin-bottom: 8px;
             color: #444;
         }
-
-        /* Botão para mostrar/esconder a sidebar em mobile */
-        .mobile-toggle {
-            display: none;
-            background-color: #0095ff;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            text-align: center;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        /* MEDIA QUERIES PARA RESPONSIVIDADE */
-
-        /* Tablets */
-        @media (max-width: 992px) {
-            .container {
-                width: 95%;
-                padding: 15px;
-            }
-
-            .sidebar {
-                width: 220px;
-            }
-        }
-
-        /* Dispositivos móveis */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .main-content {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-
-            .mobile-toggle {
-                display: block;
-            }
-
-            .sidebar-content {
-                display: none;
-            }
-
-            .sidebar-content.active {
-                display: block;
-            }
-
-            .question-header {
-                flex-direction: column;
-            }
-
-            .response-header {
-                flex-direction: column;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            input[type="text"] {
-                width: 100%;
-                box-sizing: border-box;
-            }
-        }
-
-        /* Dispositivos muito pequenos */
-        @media (max-width: 480px) {
-            .container {
-                width: 100%;
-                padding: 10px;
-            }
-
-            .vote-buttons {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .question-title {
-                font-size: 18px;
-            }
-
-            .notification {
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                text-align: center;
-            }
-        }
     </style>
 </head>
-
 <body>
     <header>
         <div class="container header-container">
             <div class="logo">
-                <img src="img/logo.png" alt="Logo">
+                <img src="img/logo.png" alt="Logo" alt="">                
             </div>
             <div>
-                <input type="text" id="search-input" placeholder="Buscar Duvida..."
-                    style="padding: 8px; border-radius: 3px; border: none;">
+                <input type="text" id="search-input" placeholder="Buscar Duvida..." style="padding: 8px; border-radius: 3px; border: none;">
             </div>
         </div>
     </header>
-
+    
     <div class="container">
         <div class="main-content">
             <div class="sidebar">
-                <button id="toggle-sidebar" class="mobile-toggle">Mostrar/Esconder Filtros</button>
-                <div class="sidebar-content">
-                    <div class="category-section">
-                        <h3 class="category-title">Perguntas em aberto</h3>
-                        <select id="pending-categories" class="question-select">
-                            <option value="">-- Selecione uma categoria --</option>
-                        </select>
-                        <select id="pending-questions" class="question-select">
-                            <option value="">-- Selecione uma pergunta --</option>
-                        </select>
-                    </div>
-
-                    <div class="category-section">
-                        <h3 class="category-title">Respondidas</h3>
-                        <select id="answered-categories" class="question-select">
-                            <option value="">-- Selecione uma categoria --</option>
-                        </select>
-                        <select id="answered-questions" class="question-select">
-                            <option value="">-- Selecione uma pergunta --</option>
-                        </select>
-                    </div>
+                <div class="category-section">
+                    <h3 class="category-title">Perguntas em aberto</h3>
+                    <select id="pending-categories" class="question-select">
+                        <option value="">-- Selecione uma categoria --</option>
+                    </select>
+                    <select id="pending-questions" class="question-select">
+                        <option value="">-- Selecione uma pergunta --</option>
+                    </select>
+                </div>
+                
+                <div class="category-section">
+                    <h3 class="category-title">Respondidas</h3>
+                    <select id="answered-categories" class="question-select">
+                        <option value="">-- Selecione uma categoria --</option>
+                    </select>
+                    <select id="answered-questions" class="question-select">
+                        <option value="">-- Selecione uma pergunta --</option>
+                    </select>
                 </div>
             </div>
-
+            
             <div class="content">
                 <div id="question-display" class="hidden">
                     <div class="question-container">
@@ -432,7 +327,7 @@
                             Perguntado por <span id="display-author"></span> em <span id="display-date"></span>
                         </div>
                         <div id="display-body" class="question-body"></div>
-
+                        
                         <div id="response-section" class="hidden">
                             <div class="response-container">
                                 <div class="response-header">
@@ -440,7 +335,7 @@
                                     <span class="response-meta">Respondido por <span id="response-author"></span></span>
                                 </div>
                                 <div id="response-body" class="response-body"></div>
-
+                                
                                 <div class="vote-buttons">
                                     <button id="like-button" class="vote-button">
                                         <span>👍</span> Like <span id="like-count">0</span>
@@ -451,16 +346,15 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div id="answer-form-container" class="answer-form hidden">
                             <h3>Sua Resposta</h3>
-                            <textarea id="answer-textarea" class="answer-textarea"
-                                placeholder="Escreva sua resposta aqui..."></textarea>
+                            <textarea id="answer-textarea" class="answer-textarea" placeholder="Escreva sua resposta aqui..."></textarea>
                             <button id="submit-answer" class="submit-button">Enviar Resposta</button>
                         </div>
                     </div>
                 </div>
-
+                
                 <div id="welcome-message">
                     <h2>Bem-vindo ao Fórum de Perguntas e Respostas!</h2>
                     <p>Selecione uma categoria e depois uma pergunta para responder ou visualizar.</p>
@@ -468,10 +362,10 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Container para notificações -->
     <div id="notification" class="notification"></div>
-
+    
     <script>
         // Simulação de dados da API
         const questions = [
@@ -537,15 +431,15 @@
                 response: {
                     author: "Raimundo Donato",
                     body: "O dispositivo pode ser habilitado das seguintes formas:\n\n1.Via agência: O funcionário fornece um código de habilitação.\n\n1.1 Acessar a Intranet.\n\n" +
-                        "1.2 Acessar o Portal de Sistemas.\n\n1.3. GCD - Gerenciador e cadastro de dispositivos - Código de Habilitação - criar código de habilitação - Entrar com número da conta. Pegar o código e entregar ao cliente." +
-                        "Via internet banking: Acesse Gerenciador de Dispositivos e habilite o aparelho Via autoatendimento: outros serviços -  dispositivos - habilitar app - banestes app - contrassenha - selecionar dispositivos que serão habilitados - confirma." +
-                        "Via aplicativo: No menu Segurança, gerencie os dispositivos cadastrados."
+                    "1.2 Acessar o Portal de Sistemas.\n\n1.3. GCD - Gerenciador e cadastro de dispositivos - Código de Habilitação - criar código de habilitação - Entrar com número da conta. Pegar o código e entregar ao cliente." +
+                    "Via internet banking: Acesse Gerenciador de Dispositivos e habilite o aparelho Via autoatendimento: outros serviços -  dispositivos - habilitar app - banestes app - contrassenha - selecionar dispositivos que serão habilitados - confirma." +
+                    "Via aplicativo: No menu Segurança, gerencie os dispositivos cadastrados."
                 },
                 likes: 0,
                 dislikes: 0
             }
         ];
-
+        
         // Elementos DOM
         const pendingCategoriesSelect = document.getElementById('pending-categories');
         const answeredCategoriesSelect = document.getElementById('answered-categories');
@@ -571,11 +465,11 @@
         const searchInput = document.getElementById('search-input');
         const notificationElement = document.getElementById('notification');
         const searchResultsContainer = document.createElement('div');
-
+        
         // Adiciona o container de resultados da pesquisa à página
         searchResultsContainer.classList.add('search-results');
         document.querySelector('.content').appendChild(searchResultsContainer);
-
+        
         // Função para obter categorias únicas
         function getUniqueCategories() {
             const categories = new Set();
@@ -584,16 +478,16 @@
             });
             return Array.from(categories).sort();
         }
-
+        
         // Carrega as categorias nos selects
         function loadCategories() {
             // Limpa os selects
             pendingCategoriesSelect.innerHTML = '<option value="">-- Selecione uma categoria --</option>';
             answeredCategoriesSelect.innerHTML = '<option value="">-- Selecione uma categoria --</option>';
-
+            
             // Obtém as categorias únicas
             const categories = getUniqueCategories();
-
+            
             // Verifica se há perguntas não respondidas por categoria
             categories.forEach(category => {
                 const pendingInCategory = questions.some(q => q.category === category && !q.answered);
@@ -603,7 +497,7 @@
                     option.textContent = category;
                     pendingCategoriesSelect.appendChild(option);
                 }
-
+                
                 const answeredInCategory = questions.some(q => q.category === category && q.answered);
                 if (answeredInCategory) {
                     const option = document.createElement('option');
@@ -613,18 +507,18 @@
                 }
             });
         }
-
+        
         // Carrega as perguntas para um select específico
         function loadQuestionsForCategory(category, status) {
             // Filtra perguntas pela categoria e status (respondidas ou não)
-            const filteredQuestions = questions.filter(q =>
+            const filteredQuestions = questions.filter(q => 
                 q.category === category && q.answered === (status === 'answered')
             );
-
+            
             // Limpa a lista atual
             const targetSelect = status === 'answered' ? answeredQuestionsSelect : pendingQuestionsSelect;
             targetSelect.innerHTML = '<option value="">-- Selecione uma pergunta --</option>';
-
+            
             // Adiciona as perguntas ao select
             filteredQuestions.forEach(question => {
                 const option = document.createElement('option');
@@ -633,69 +527,69 @@
                 targetSelect.appendChild(option);
             });
         }
-
+        
         // Exibe uma pergunta selecionada
         // Modificar a função displayQuestion para também atualizar os botões de like/dislike
-        function displayQuestion(questionId) {
-            const question = questions.find(q => q.id == questionId);
-
-            if (!question) return;
-
-            // Atualiza os elementos com os dados da pergunta
-            displayTitle.textContent = question.title;
-            displayAuthor.textContent = question.author;
-            displayDate.textContent = question.date;
-            displayBody.textContent = question.body;
-            questionStatus.textContent = question.answered ? "Respondida" : "Aguardando resposta";
-
-            // Mostra a seção de resposta se a pergunta foi respondida
-            if (question.answered && question.response) {
-                responseSection.classList.remove('hidden');
-                answerFormContainer.classList.add('hidden');
-
-                responseAuthor.textContent = question.response.author;
-                responseBody.textContent = question.response.body;
-
-                // Atualiza os contadores e o visual dos botões de like/dislike
-                likeCount.textContent = question.likes;
-                dislikeCount.textContent = question.dislikes;
-
-                // Resetar classes dos botões
-                likeButton.classList.remove('liked');
-                dislikeButton.classList.remove('disliked');
-            } else {
-                responseSection.classList.add('hidden');
-                answerFormContainer.classList.remove('hidden');
-            }
-
-            // Mostra a pergunta e esconde a mensagem de boas-vindas
-            questionDisplay.classList.remove('hidden');
-            welcomeMessage.classList.add('hidden');
-
-            // Esconde os resultados da pesquisa
-            searchResultsContainer.classList.add('hidden');
-        }
-
+function displayQuestion(questionId) {
+    const question = questions.find(q => q.id == questionId);
+    
+    if (!question) return;
+    
+    // Atualiza os elementos com os dados da pergunta
+    displayTitle.textContent = question.title;
+    displayAuthor.textContent = question.author;
+    displayDate.textContent = question.date;
+    displayBody.textContent = question.body;
+    questionStatus.textContent = question.answered ? "Respondida" : "Aguardando resposta";
+    
+    // Mostra a seção de resposta se a pergunta foi respondida
+    if (question.answered && question.response) {
+        responseSection.classList.remove('hidden');
+        answerFormContainer.classList.add('hidden');
+        
+        responseAuthor.textContent = question.response.author;
+        responseBody.textContent = question.response.body;
+        
+        // Atualiza os contadores e o visual dos botões de like/dislike
+        likeCount.textContent = question.likes;
+        dislikeCount.textContent = question.dislikes;
+        
+        // Resetar classes dos botões
+        likeButton.classList.remove('liked');
+        dislikeButton.classList.remove('disliked');
+    } else {
+        responseSection.classList.add('hidden');
+        answerFormContainer.classList.remove('hidden');
+    }
+    
+    // Mostra a pergunta e esconde a mensagem de boas-vindas
+    questionDisplay.classList.remove('hidden');
+    welcomeMessage.classList.add('hidden');
+    
+    // Esconde os resultados da pesquisa
+    searchResultsContainer.classList.add('hidden');
+}
+        
         // Função para mostrar notificações
         function showNotification(message, duration = 3000) {
             notificationElement.textContent = message;
             notificationElement.classList.add('show');
-
+            
             setTimeout(() => {
                 notificationElement.classList.remove('show');
             }, duration);
         }
-
+        
         // Manipulador para responder uma pergunta
         function submitAnswerHandler() {
             const selectedId = pendingQuestionsSelect.value;
             const answerText = answerTextarea.value.trim();
-
+            
             if (!answerText) {
                 alert("Por favor, escreva uma resposta antes de enviar.");
                 return;
             }
-
+            
             // Encontra a pergunta e adiciona a resposta
             const questionIndex = questions.findIndex(q => q.id == selectedId);
             if (questionIndex >= 0) {
@@ -705,120 +599,120 @@
                     author: "você",
                     body: answerText
                 };
-
+                
                 // Recarrega a interface
                 loadCategories();
-
+                
                 // Limpa a seleção anterior
                 pendingQuestionsSelect.value = "";
                 answeredQuestionsSelect.value = question.category;
                 loadQuestionsForCategory(question.category, 'answered');
-
+                
                 // Exibe a pergunta atualizada
                 displayQuestion(selectedId);
-
+                
                 // Limpa o textarea
                 answerTextarea.value = "";
-
+                
                 // Mostra notificação
                 showNotification(`A pergunta "${question.title}" foi respondida e movida para a lista de perguntas respondidas.`);
             }
         }
-
+        
         // Manipuladores para like/dislike
-        function likeHandler() {
-            // Obter o ID da pergunta atualmente exibida
-            const selectedId = getCurrentlyDisplayedQuestionId();
+function likeHandler() {
+    // Obter o ID da pergunta atualmente exibida
+    const selectedId = getCurrentlyDisplayedQuestionId();
+    
+    if (!selectedId) return;
+    
+    const questionIndex = questions.findIndex(q => q.id == selectedId);
+    
+    if (questionIndex >= 0) {
+        questions[questionIndex].likes++;
+        likeCount.textContent = questions[questionIndex].likes;
+        
+        // Marca o botão como ativo
+        likeButton.classList.add('liked');
+        dislikeButton.classList.remove('disliked');
+    }
+}
 
-            if (!selectedId) return;
+function dislikeHandler() {
+    // Obter o ID da pergunta atualmente exibida
+    const selectedId = getCurrentlyDisplayedQuestionId();
+    
+    if (!selectedId) return;
+    
+    const questionIndex = questions.findIndex(q => q.id == selectedId);
+    
+    if (questionIndex >= 0) {
+        questions[questionIndex].dislikes++;
+        dislikeCount.textContent = questions[questionIndex].dislikes;
+        
+        // Marca o botão como ativo
+        dislikeButton.classList.add('disliked');
+        likeButton.classList.remove('liked');
+    }
+}
 
-            const questionIndex = questions.findIndex(q => q.id == selectedId);
-
-            if (questionIndex >= 0) {
-                questions[questionIndex].likes++;
-                likeCount.textContent = questions[questionIndex].likes;
-
-                // Marca o botão como ativo
-                likeButton.classList.add('liked');
-                dislikeButton.classList.remove('disliked');
-            }
-        }
-
-        function dislikeHandler() {
-            // Obter o ID da pergunta atualmente exibida
-            const selectedId = getCurrentlyDisplayedQuestionId();
-
-            if (!selectedId) return;
-
-            const questionIndex = questions.findIndex(q => q.id == selectedId);
-
-            if (questionIndex >= 0) {
-                questions[questionIndex].dislikes++;
-                dislikeCount.textContent = questions[questionIndex].dislikes;
-
-                // Marca o botão como ativo
-                dislikeButton.classList.add('disliked');
-                likeButton.classList.remove('liked');
-            }
-        }
-
-        // Função auxiliar para obter o ID da pergunta atualmente exibida
-        function getCurrentlyDisplayedQuestionId() {
-            // Verificar se alguma pergunta da lista de pendentes está selecionada
-            if (pendingQuestionsSelect.value) {
-                return pendingQuestionsSelect.value;
-            }
-
-            // Verificar se alguma pergunta da lista de respondidas está selecionada
-            if (answeredQuestionsSelect.value) {
-                return answeredQuestionsSelect.value;
-            }
-
-            // Se chegou aqui, não há pergunta selecionada
-            return null;
-        }
-
+// Função auxiliar para obter o ID da pergunta atualmente exibida
+function getCurrentlyDisplayedQuestionId() {
+    // Verificar se alguma pergunta da lista de pendentes está selecionada
+    if (pendingQuestionsSelect.value) {
+        return pendingQuestionsSelect.value;
+    }
+    
+    // Verificar se alguma pergunta da lista de respondidas está selecionada
+    if (answeredQuestionsSelect.value) {
+        return answeredQuestionsSelect.value;
+    }
+    
+    // Se chegou aqui, não há pergunta selecionada
+    return null;
+}
+        
         // Função para destacar o texto pesquisado
         function highlightText(text, searchTerm) {
             if (!searchTerm) return text;
-
+            
             const regex = new RegExp(`(${searchTerm})`, 'gi');
             return text.replace(regex, '<span class="search-result-highlight">$1</span>');
         }
-
+        
         // Função para pesquisar perguntas
         function searchQuestions(searchTerm) {
             searchTerm = searchTerm.trim().toLowerCase();
-
+            
             if (!searchTerm) {
                 searchResultsContainer.innerHTML = '';
                 searchResultsContainer.classList.add('hidden');
                 return;
             }
-
+            
             // Filtra as perguntas que contêm o termo de pesquisa no título, categoria ou corpo
-            const results = questions.filter(question =>
-                question.title.toLowerCase().includes(searchTerm) ||
+            const results = questions.filter(question => 
+                question.title.toLowerCase().includes(searchTerm) || 
                 question.category.toLowerCase().includes(searchTerm) ||
                 question.body.toLowerCase().includes(searchTerm) ||
-                (question.answered && question.response &&
-                    question.response.body.toLowerCase().includes(searchTerm))
+                (question.answered && question.response && 
+                 question.response.body.toLowerCase().includes(searchTerm))
             );
-
+            
             // Exibe os resultados
             searchResultsContainer.innerHTML = '';
             searchResultsContainer.classList.remove('hidden');
-
+            
             // Esconde a pergunta e mensagem de boas-vindas
             questionDisplay.classList.add('hidden');
             welcomeMessage.classList.add('hidden');
-
+            
             // Adiciona o status da pesquisa
             const statusEl = document.createElement('div');
             statusEl.classList.add('search-status');
             statusEl.textContent = `${results.length} resultado(s) encontrado(s) para "${searchTerm}"`;
             searchResultsContainer.appendChild(statusEl);
-
+            
             if (results.length === 0) {
                 const noResults = document.createElement('div');
                 noResults.classList.add('no-results');
@@ -826,101 +720,101 @@
                 searchResultsContainer.appendChild(noResults);
                 return;
             }
-
+            
             // Cria elementos para cada resultado
             results.forEach(question => {
                 const resultItem = document.createElement('div');
                 resultItem.classList.add('search-result-item');
                 resultItem.dataset.id = question.id;
-
+                
                 const title = document.createElement('div');
                 title.classList.add('search-result-title');
                 title.innerHTML = `${highlightText(question.category, searchTerm)} > ${highlightText(question.title, searchTerm)}`;
-
+                
                 const meta = document.createElement('div');
                 meta.classList.add('search-result-meta');
                 meta.textContent = `${question.answered ? 'Respondida' : 'Aguardando resposta'} • Por ${question.author} em ${question.date}`;
-
+                
                 const snippet = document.createElement('div');
                 snippet.classList.add('search-result-snippet');
-
+                
                 // Busca um snippet relevante do corpo da pergunta
                 let snippetText = question.body;
                 const bodyIndex = snippetText.toLowerCase().indexOf(searchTerm);
                 if (bodyIndex !== -1) {
                     const start = Math.max(0, bodyIndex - 50);
                     const end = Math.min(snippetText.length, bodyIndex + searchTerm.length + 50);
-                    snippetText = (start > 0 ? '...' : '') +
-                        snippetText.substring(start, end) +
-                        (end < snippetText.length ? '...' : '');
+                    snippetText = (start > 0 ? '...' : '') + 
+                                 snippetText.substring(start, end) + 
+                                 (end < snippetText.length ? '...' : '');
                 }
-
+                
                 snippet.innerHTML = highlightText(snippetText, searchTerm);
-
+                
                 resultItem.appendChild(title);
                 resultItem.appendChild(meta);
                 resultItem.appendChild(snippet);
-
+                
                 // Adiciona evento de clique para mostrar a pergunta completa
-                resultItem.addEventListener('click', function () {
+                resultItem.addEventListener('click', function() {
                     displayQuestion(this.dataset.id);
                 });
-
+                
                 searchResultsContainer.appendChild(resultItem);
             });
         }
-
+        
         // Event listeners para pesquisa
-        searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function() {
             searchQuestions(this.value);
         });
-
-        searchInput.addEventListener('keydown', function (e) {
+        
+        searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 searchQuestions(this.value);
             }
         });
-
+        
         // Event listeners para os selects de categoria
-        pendingCategoriesSelect.addEventListener('change', function () {
+        pendingCategoriesSelect.addEventListener('change', function() {
             const category = this.value;
             loadQuestionsForCategory(category, 'pending');
         });
-
-        answeredCategoriesSelect.addEventListener('change', function () {
+        
+        answeredCategoriesSelect.addEventListener('change', function() {
             const category = this.value;
             loadQuestionsForCategory(category, 'answered');
         });
 
         // Event listeners para os selects de perguntas
-        pendingQuestionsSelect.addEventListener('change', function () {
+        pendingQuestionsSelect.addEventListener('change', function() {
             const questionId = this.value;
             if (questionId) {
                 displayQuestion(questionId);
             }
         });
 
-        answeredQuestionsSelect.addEventListener('change', function () {
+        answeredQuestionsSelect.addEventListener('change', function() {
             const questionId = this.value;
             if (questionId) {
                 displayQuestion(questionId);
             }
         });
 
-
+        
         function setupSearchBlurBehavior() {
             // Referência ao campo de busca
             const searchInput = document.querySelector('input[placeholder="Buscar Duvida..."]');
-
+            
             // Adiciona evento de blur (quando o campo perde o foco)
-            searchInput.addEventListener('blur', function () {
+            searchInput.addEventListener('blur', function() {
                 // Salva o termo de busca atual antes de limpar o campo
                 const searchTerm = this.value.trim();
-
+                
                 // Limpa o campo de busca
-                this.value = '';
-            });
-        }
+                this.value = '';                
+    });
+    }
 
         // Event listeners para os botões
         submitAnswer.addEventListener('click', submitAnswerHandler);
@@ -929,10 +823,9 @@
 
         // Configurar comportamento de limpeza do campo de busca ao perder foco
         setupSearchBlurBehavior();
-
+        
         // Inicializa a página
         loadCategories();
     </script>
 </body>
-
 </html>
