@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fórum de Perguntas e Respostas</title>
     <style>
-        /* Estilos existentes... */
+        /* Estilos base */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -278,13 +278,128 @@
             margin-bottom: 8px;
             color: #444;
         }
+        
+        /* Botão para mostrar/esconder o menu em dispositivos móveis */
+        .mobile-menu-toggle {
+            display: none;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 10px;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            
+            .header-container input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .logo {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+                order: 2;
+            }
+            
+            .content {
+                order: 1;
+                margin-bottom: 20px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .sidebar.mobile-hidden {
+                display: none;
+            }
+            
+            .question-header {
+                flex-direction: column;
+            }
+            
+            .question-title {
+                font-size: 18px;
+            }
+            
+            .response-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .vote-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .notification {
+                width: 80%;
+                left: 10%;
+                right: 10%;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .question-title {
+                font-size: 16px;
+            }
+            
+            .question-body, .response-body {
+                font-size: 14px;
+            }
+            
+            .vote-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .vote-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .container {
+                padding: 5px;
+            }
+            
+            .content {
+                padding: 15px 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
             <div class="logo">
-                <img src="img/logo.png" alt="Logo" alt="">                
+                <img src="img/logo.png" alt="Logo">                
             </div>
             <div>
                 <input type="text" id="search-input" placeholder="Buscar Duvida..." style="padding: 8px; border-radius: 3px; border: none;">
@@ -293,8 +408,10 @@
     </header>
     
     <div class="container">
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle">Mostrar/Esconder Filtros</button>
+        
         <div class="main-content">
-            <div class="sidebar">
+            <div id="sidebar" class="sidebar mobile-hidden">
                 <div class="category-section">
                     <h3 class="category-title">Perguntas em aberto</h3>
                     <select id="pending-categories" class="question-select">
@@ -465,6 +582,8 @@
         const searchInput = document.getElementById('search-input');
         const notificationElement = document.getElementById('notification');
         const searchResultsContainer = document.createElement('div');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const sidebar = document.getElementById('sidebar');
         
         // Adiciona o container de resultados da pesquisa à página
         searchResultsContainer.classList.add('search-results');
@@ -529,46 +648,50 @@
         }
         
         // Exibe uma pergunta selecionada
-        // Modificar a função displayQuestion para também atualizar os botões de like/dislike
-function displayQuestion(questionId) {
-    const question = questions.find(q => q.id == questionId);
-    
-    if (!question) return;
-    
-    // Atualiza os elementos com os dados da pergunta
-    displayTitle.textContent = question.title;
-    displayAuthor.textContent = question.author;
-    displayDate.textContent = question.date;
-    displayBody.textContent = question.body;
-    questionStatus.textContent = question.answered ? "Respondida" : "Aguardando resposta";
-    
-    // Mostra a seção de resposta se a pergunta foi respondida
-    if (question.answered && question.response) {
-        responseSection.classList.remove('hidden');
-        answerFormContainer.classList.add('hidden');
-        
-        responseAuthor.textContent = question.response.author;
-        responseBody.textContent = question.response.body;
-        
-        // Atualiza os contadores e o visual dos botões de like/dislike
-        likeCount.textContent = question.likes;
-        dislikeCount.textContent = question.dislikes;
-        
-        // Resetar classes dos botões
-        likeButton.classList.remove('liked');
-        dislikeButton.classList.remove('disliked');
-    } else {
-        responseSection.classList.add('hidden');
-        answerFormContainer.classList.remove('hidden');
-    }
-    
-    // Mostra a pergunta e esconde a mensagem de boas-vindas
-    questionDisplay.classList.remove('hidden');
-    welcomeMessage.classList.add('hidden');
-    
-    // Esconde os resultados da pesquisa
-    searchResultsContainer.classList.add('hidden');
-}
+        function displayQuestion(questionId) {
+            const question = questions.find(q => q.id == questionId);
+            
+            if (!question) return;
+            
+            // Atualiza os elementos com os dados da pergunta
+            displayTitle.textContent = question.title;
+            displayAuthor.textContent = question.author;
+            displayDate.textContent = question.date;
+            displayBody.textContent = question.body;
+            questionStatus.textContent = question.answered ? "Respondida" : "Aguardando resposta";
+            
+            // Mostra a seção de resposta se a pergunta foi respondida
+            if (question.answered && question.response) {
+                responseSection.classList.remove('hidden');
+                answerFormContainer.classList.add('hidden');
+                
+                responseAuthor.textContent = question.response.author;
+                responseBody.textContent = question.response.body;
+                
+                // Atualiza os contadores e o visual dos botões de like/dislike
+                likeCount.textContent = question.likes;
+                dislikeCount.textContent = question.dislikes;
+                
+                // Resetar classes dos botões
+                likeButton.classList.remove('liked');
+                dislikeButton.classList.remove('disliked');
+            } else {
+                responseSection.classList.add('hidden');
+                answerFormContainer.classList.remove('hidden');
+            }
+            
+            // Mostra a pergunta e esconde a mensagem de boas-vindas
+            questionDisplay.classList.remove('hidden');
+            welcomeMessage.classList.add('hidden');
+            
+            // Esconde os resultados da pesquisa
+            searchResultsContainer.classList.add('hidden');
+            
+            // Em dispositivos móveis, esconde o sidebar após selecionar uma pergunta
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        }
         
         // Função para mostrar notificações
         function showNotification(message, duration = 3000) {
@@ -620,57 +743,57 @@ function displayQuestion(questionId) {
         }
         
         // Manipuladores para like/dislike
-function likeHandler() {
-    // Obter o ID da pergunta atualmente exibida
-    const selectedId = getCurrentlyDisplayedQuestionId();
-    
-    if (!selectedId) return;
-    
-    const questionIndex = questions.findIndex(q => q.id == selectedId);
-    
-    if (questionIndex >= 0) {
-        questions[questionIndex].likes++;
-        likeCount.textContent = questions[questionIndex].likes;
-        
-        // Marca o botão como ativo
-        likeButton.classList.add('liked');
-        dislikeButton.classList.remove('disliked');
-    }
-}
+        function likeHandler() {
+            // Obter o ID da pergunta atualmente exibida
+            const selectedId = getCurrentlyDisplayedQuestionId();
+            
+            if (!selectedId) return;
+            
+            const questionIndex = questions.findIndex(q => q.id == selectedId);
+            
+            if (questionIndex >= 0) {
+                questions[questionIndex].likes++;
+                likeCount.textContent = questions[questionIndex].likes;
+                
+                // Marca o botão como ativo
+                likeButton.classList.add('liked');
+                dislikeButton.classList.remove('disliked');
+            }
+        }
 
-function dislikeHandler() {
-    // Obter o ID da pergunta atualmente exibida
-    const selectedId = getCurrentlyDisplayedQuestionId();
-    
-    if (!selectedId) return;
-    
-    const questionIndex = questions.findIndex(q => q.id == selectedId);
-    
-    if (questionIndex >= 0) {
-        questions[questionIndex].dislikes++;
-        dislikeCount.textContent = questions[questionIndex].dislikes;
-        
-        // Marca o botão como ativo
-        dislikeButton.classList.add('disliked');
-        likeButton.classList.remove('liked');
-    }
-}
+        function dislikeHandler() {
+            // Obter o ID da pergunta atualmente exibida
+            const selectedId = getCurrentlyDisplayedQuestionId();
+            
+            if (!selectedId) return;
+            
+            const questionIndex = questions.findIndex(q => q.id == selectedId);
+            
+            if (questionIndex >= 0) {
+                questions[questionIndex].dislikes++;
+                dislikeCount.textContent = questions[questionIndex].dislikes;
+                
+                // Marca o botão como ativo
+                dislikeButton.classList.add('disliked');
+                likeButton.classList.remove('liked');
+            }
+        }
 
-// Função auxiliar para obter o ID da pergunta atualmente exibida
-function getCurrentlyDisplayedQuestionId() {
-    // Verificar se alguma pergunta da lista de pendentes está selecionada
-    if (pendingQuestionsSelect.value) {
-        return pendingQuestionsSelect.value;
-    }
-    
-    // Verificar se alguma pergunta da lista de respondidas está selecionada
-    if (answeredQuestionsSelect.value) {
-        return answeredQuestionsSelect.value;
-    }
-    
-    // Se chegou aqui, não há pergunta selecionada
-    return null;
-}
+        // Função auxiliar para obter o ID da pergunta atualmente exibida
+        function getCurrentlyDisplayedQuestionId() {
+            // Verificar se alguma pergunta da lista de pendentes está selecionada
+            if (pendingQuestionsSelect.value) {
+                return pendingQuestionsSelect.value;
+            }
+            
+            // Verificar se alguma pergunta da lista de respondidas está selecionada
+            if (answeredQuestionsSelect.value) {
+                return answeredQuestionsSelect.value;
+            }
+            
+            // Se chegou aqui, não há pergunta selecionada
+            return null;
+        }
         
         // Função para destacar o texto pesquisado
         function highlightText(text, searchTerm) {
